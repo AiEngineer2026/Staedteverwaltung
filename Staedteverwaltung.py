@@ -43,7 +43,12 @@ class Staedteverwaltung:
         self.conn.commit()
 
     def stadt_hinzufuegen(self, stadt):
-        """Fügt eine Stadt oder Hauptstadt in die DB ein."""
+        """
+        Fügt eine neue Stadt in die Datenbank ein.
+        Verhindert doppelte Einträge.
+
+        :param stadt: Instanz von Stadt oder Hauptstadt
+        """
         typ = "Hauptstadt" if isinstance(stadt, Hauptstadt) else "Stadt"
         land = getattr(stadt, "land", None)
         try:
@@ -72,7 +77,9 @@ class Staedteverwaltung:
                 print(f"{name} ({einwohner} Einwohner)")
 
     def groesste_stadt(self):
-        """Gibt die Stadt mit der höchsten Einwohnerzahl zurück."""
+        """
+        Gibt die Stadt mit der höchsten Einwohnerzahl zurück.
+        """
         self.cursor.execute("SELECT name, einwohner FROM staedte ORDER BY einwohner DESC LIMIT 1")
         result = self.cursor.fetchone()
         if result:
@@ -81,7 +88,9 @@ class Staedteverwaltung:
             print("Keine Daten vorhanden.")
 
     def kleinste_stadt(self):
-        """Gibt die Stadt mit der kleinsten Einwohnerzahl zurück."""
+        """
+        Gibt die Stadt mit der kleinsten Einwohnerzahl zurück.
+        """
         self.cursor.execute("SELECT name, einwohner FROM staedte ORDER BY einwohner ASC LIMIT 1")
         result = self.cursor.fetchone()
         if result:
@@ -94,6 +103,11 @@ class Staedteverwaltung:
         self.conn.close()
 
     def stadt_aktualisieren(self, name, neue_einwohnerzahl):
+        """
+        Es wird eine Stadt aktualisiert
+
+        :param name: Stadt name, neue_einwohnerzahl: EInwohnerzahl der Stadt
+        """
         self.cursor.execute("UPDATE staedte SET einwohner = ? WHERE name = ?", (neue_einwohnerzahl, name))
         if self.cursor.rowcount > 0:
             print(f"{name} wurde aktualisiert!")
